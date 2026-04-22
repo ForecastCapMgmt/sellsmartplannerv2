@@ -1,0 +1,69 @@
+# SellSmartPlanner v2 - Core Rules
+
+## Project Overview
+- **Name**: SellSmartPlanner (Wealth Lab)
+- **Domain**: www.sellsmartplanner.com
+- **Target Audience**: Affluent business owners and executives ($5M–$50M+ net worth) targeting RIA prospects
+- **Flagship Tool**: Sell My Business Planner
+- **Core Question**: “If I sell my company, will I actually be better off financially?”
+
+## Strict Technical Rules
+- **100% Local Only**: All user data, saved scenarios, calculations stored exclusively in localStorage. NO external services, APIs, databases, auth servers, or cloud storage.
+- **Transparent Calculations**: Every calculation must be fully transparent. Show formulas, assumptions, step-by-step breakdowns. No black-box math. Include detailed comments in calculator files.
+- **No External Dependencies for Core Logic**: Calculations must be pure JS/TS functions. Use Recharts for visualization only.
+
+## UI/UX Standards (Premium Dark Finance Aesthetic)
+- **Color Palette**:
+  - Backgrounds: Deep navy (#0a1428, #111827), slate (#1e2937, #334155)
+  - Accents: Emerald (#10b981), Teal (#14b8a6), Gold accents for finance highlights
+  - Text: Light slate/grays for readability on dark bg
+- **Style**: Generous whitespace, professional typography (Inter or system sans), subtle card borders with glassmorphism or clean shadows, high-end finance feel (like Bloomberg terminal meets modern SaaS).
+- **Components**: Use shadcn/ui with custom dark theme. Cards, buttons, inputs, progress indicators, sidebars must feel premium.
+- **Theme**: Dark by default. Consistent use of Tailwind dark: prefix where needed.
+
+## Architecture & Folder Structure
+- `app/`
+  - `planner/page.tsx` - Main 4-step wizard
+  - `profile/page.tsx` - User profile/scenarios page
+  - `layout.tsx` - Root layout with dark theme
+  - `globals.css` - Custom finance theme styles
+- `lib/`
+  - `calculators/`
+    - `saleCalculator.ts` - Business sale taxes, net proceeds
+    - `projectionCalculator.ts` - Post-sale wealth projection
+    - `comparisonCalculator.ts` - Keep vs Sell analysis
+    - `types.ts` - Shared TypeScript interfaces
+  - `utils.ts` - LocalStorage helpers, formatters, constants
+- `components/`
+  - `wizard/` - Reusable wizard steps, progress sidebar, assumption panel
+  - `ui/` - shadcn components (Button, Card, Input, etc.)
+  - `charts/` - Recharts wrappers for Keep vs Sell comparison
+- All pages use server components where possible, client for interactivity.
+
+## Wizard Specifications
+- **4 Steps** with persistent progress sidebar:
+  1. **Business Inputs**: Revenue, EBITDA, growth, industry, owner age, etc.
+  2. **Sale Outcome**: Realistic sale multiple, taxes (federal, state, NIIT, etc.), net proceeds calculation with transparency.
+  3. **Post-sale Projection**: Investment returns, lifestyle spending, inflation, time horizon.
+  4. **Keep vs Sell Comparison**: Charts showing wealth trajectories. Often highlights that keeping the business generates more sustainable wealth.
+- Real-time calculations updating as user types.
+- **Assumptions Panel**: Collapsible side panel with editable assumptions and disclaimers.
+- **Dynamic Insights**: Contextual tips, strong disclaimers about not being financial advice.
+- LocalStorage persistence for scenarios.
+
+## Development Rules
+- Follow Next.js 15/16 App Router, TypeScript strict, Tailwind v4.
+- All state in React (useState, useEffect for localStorage sync).
+- Charts using Recharts (Line, Bar, Area charts for comparisons).
+- Premium, professional tone in all copy and UI text.
+- Strong disclaimers everywhere: "This is for illustrative purposes only. Consult qualified financial advisors."
+- Keep code clean, well-commented, modular.
+
+## Calculation Transparency
+- Document every formula (e.g. Net Proceeds = Sale Price - Taxes - Fees).
+- Provide tooltips explaining each input and assumption.
+- Include sensitivity analysis where appropriate.
+
+This file defines the immutable project standards. All code changes must strictly adhere to these rules. Maintain the premium, trustworthy, transparent finance tool experience.
+
+Always prioritize clarity, professionalism, and user trust.
