@@ -11,16 +11,19 @@ import { cn } from '@/lib/utils';
 
 export function HomepageLeadForm() {
   const router = useRouter();
-  const [fullName, setFullName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
 
   const canContinue =
-    fullName.trim().length > 0 && email.trim().length > 0;
+    firstName.trim().length > 0 &&
+    lastName.trim().length > 0 &&
+    email.trim().length > 0;
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!canContinue) return;
-    saveLeadCapture(fullName, email);
+    saveLeadCapture(firstName, lastName, email);
     router.push('/planner');
   };
 
@@ -59,23 +62,44 @@ export function HomepageLeadForm() {
             <form onSubmit={handleSubmit} className="space-y-8 md:space-y-9">
               <div className="space-y-3">
                 <Label
-                  htmlFor="lead-full-name"
+                  htmlFor="lead-first-name"
                   className="text-base font-semibold tracking-wide text-slate-200 md:text-lg"
                 >
-                  Full name
+                  First name
                 </Label>
                 <p className="text-sm text-slate-500 md:text-base">
                   As you&apos;d like it to appear if we follow up.
                 </p>
                 <Input
-                  id="lead-full-name"
-                  name="fullName"
+                  id="lead-first-name"
+                  name="firstName"
                   type="text"
-                  autoComplete="name"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
+                  autoComplete="given-name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
                   className={inputClass}
-                  placeholder="Jane Smith"
+                  placeholder="Jane"
+                />
+              </div>
+              <div className="space-y-3">
+                <Label
+                  htmlFor="lead-last-name"
+                  className="text-base font-semibold tracking-wide text-slate-200 md:text-lg"
+                >
+                  Last name
+                </Label>
+                <p className="text-sm text-slate-500 md:text-base">
+                  As you&apos;d like it to appear if we follow up.
+                </p>
+                <Input
+                  id="lead-last-name"
+                  name="lastName"
+                  type="text"
+                  autoComplete="family-name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className={inputClass}
+                  placeholder="Smith"
                 />
               </div>
               <div className="space-y-3">
