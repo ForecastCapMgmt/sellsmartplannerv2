@@ -72,7 +72,7 @@ const VALUE_PROPS = [
     icon: Lock,
     title: '100% private',
     description:
-      'All scenarios live in your browser via localStorage only. Nothing is uploaded, tracked, or stored on our servers.',
+      'All scenarios are saved privately in your browser via localStorage. Your name and email are sent securely to us only for follow-up.',
   },
 ] as const;
 
