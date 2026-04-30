@@ -1,13 +1,15 @@
 export const LEAD_STORAGE_KEY = 'sellSmartPlannerLead';
 
-/** Saved lead data (first + last name). Legacy payloads may still use `fullName` only. */
+/** Saved lead data. Older browsers may still have `fullName`-only or split first/last only. */
 export type LeadCapture = {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
 };
 
-type StoredLeadPartial = Partial<LeadCapture> & { fullName?: string };
+type StoredLeadPartial = Partial<LeadCapture> & {
+  firstName?: string;
+  lastName?: string;
+};
 
 export function hasValidLeadCapture(): boolean {
   if (typeof window === 'undefined') return false;
@@ -19,7 +21,7 @@ export function hasValidLeadCapture(): boolean {
     const emailOk =
       typeof o.email === 'string' && o.email.trim().length > 0;
 
-    const legacyNameOk =
+    const fullNameOk =
       typeof o.fullName === 'string' && o.fullName.trim().length > 0;
 
     const splitNameOk =
@@ -28,20 +30,15 @@ export function hasValidLeadCapture(): boolean {
       typeof o.lastName === 'string' &&
       o.lastName.trim().length > 0;
 
-    return emailOk && (legacyNameOk || splitNameOk);
+    return emailOk && (fullNameOk || splitNameOk);
   } catch {
     return false;
   }
 }
 
-export function saveLeadCapture(
-  firstName: string,
-  lastName: string,
-  email: string
-): void {
+export function saveLeadCapture(fullName: string, email: string): void {
   const payload: LeadCapture = {
-    firstName: firstName.trim(),
-    lastName: lastName.trim(),
+    fullName: fullName.trim(),
     email: email.trim(),
   };
   localStorage.setItem(LEAD_STORAGE_KEY, JSON.stringify(payload));

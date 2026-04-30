@@ -11,19 +11,35 @@ import { cn } from '@/lib/utils';
 
 export function HomepageLeadForm() {
   const router = useRouter();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
 
-  const canContinue =
-    firstName.trim().length > 0 &&
-    lastName.trim().length > 0 &&
-    email.trim().length > 0;
+  const canContinue = fullName.trim().length > 0 && email.trim().length > 0;
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!canContinue) return;
-    saveLeadCapture(firstName, lastName, email);
+
+    try {
+      const res = await fetch('/api/convertkit/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: fullName.trim(),
+          email: email.trim(),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        console.log('[Kit] Subscribe success', data);
+      } else {
+        console.error('[Kit] Subscribe error', res.status, data);
+      }
+    } catch (err) {
+      console.error('[Kit] Subscribe request failed', err);
+    }
+
+    saveLeadCapture(fullName, email);
     router.push('/planner');
   };
 
@@ -62,44 +78,23 @@ export function HomepageLeadForm() {
             <form onSubmit={handleSubmit} className="space-y-8 md:space-y-9">
               <div className="space-y-3">
                 <Label
-                  htmlFor="lead-first-name"
+                  htmlFor="lead-full-name"
                   className="text-base font-semibold tracking-wide text-slate-200 md:text-lg"
                 >
-                  First name
+                  Full name
                 </Label>
                 <p className="text-sm text-slate-500 md:text-base">
                   As you&apos;d like it to appear if we follow up.
                 </p>
                 <Input
-                  id="lead-first-name"
-                  name="firstName"
+                  id="lead-full-name"
+                  name="fullName"
                   type="text"
-                  autoComplete="given-name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  autoComplete="name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                   className={inputClass}
-                  placeholder="Jane"
-                />
-              </div>
-              <div className="space-y-3">
-                <Label
-                  htmlFor="lead-last-name"
-                  className="text-base font-semibold tracking-wide text-slate-200 md:text-lg"
-                >
-                  Last name
-                </Label>
-                <p className="text-sm text-slate-500 md:text-base">
-                  As you&apos;d like it to appear if we follow up.
-                </p>
-                <Input
-                  id="lead-last-name"
-                  name="lastName"
-                  type="text"
-                  autoComplete="family-name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  className={inputClass}
-                  placeholder="Smith"
+                  placeholder="Jane Smith"
                 />
               </div>
               <div className="space-y-3">

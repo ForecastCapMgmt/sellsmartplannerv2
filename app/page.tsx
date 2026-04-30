@@ -157,6 +157,7 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Lead → Kit: CONVERTKIT_API_KEY in .env.local; POST /api/convertkit/subscribe */}
         <HomepageLeadForm />
 
         {/* Value proposition */}
