@@ -68,8 +68,7 @@ export function HomepageLeadForm() {
             One step before the Sell My Business Planner
           </h2>
           <p className="mt-5 text-pretty text-lg leading-relaxed text-slate-400 md:text-xl">
-            Enter your name and email. Nothing is sent to a server—details stay in your browser
-            so you can pick up where you left off.
+            Enter your name and email to continue. We'll use this only for follow-up and to save your session.
           </p>
         </div>
 
