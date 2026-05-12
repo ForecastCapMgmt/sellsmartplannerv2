@@ -378,9 +378,9 @@ function PlannerContent() {
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-[#0a1428] text-slate-200 flex">
-        {/* Progress Sidebar */}
-        <div className="w-80 bg-[#111827] border-r border-slate-700 flex-shrink-0 p-8 flex flex-col">
+      <div className="flex min-h-screen flex-col bg-[#0a1428] text-slate-200 md:flex-row">
+        {/* Progress Sidebar — desktop only */}
+        <div className="hidden w-80 shrink-0 flex-col border-r border-slate-700 bg-[#111827] p-8 md:flex">
           <div className="flex items-center gap-3 mb-10">
             <div className="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center">
               <Calculator className="w-5 h-5 text-white" />
@@ -458,33 +458,112 @@ function PlannerContent() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 p-10 overflow-auto">
-          <div className="max-w-5xl mx-auto">
-            <div className="flex items-center justify-between mb-10">
-              <div>
-                <div className="uppercase text-xs tracking-[3px] text-emerald-500 font-medium mb-1">FLAGTOOL</div>
-                <h1 className="text-5xl font-semibold tracking-tighter text-white">Sell My Business Planner</h1>
-                <p className="text-xl text-slate-400 mt-3 max-w-md">
+        <div className="flex-1 overflow-auto">
+          {/* Mobile: top progress stepper + quick actions (replaces left sidebar navigation) */}
+          <div className="sticky top-0 z-40 border-b border-slate-700/80 bg-[#0a1428]/95 backdrop-blur-md px-4 pb-4 pt-4 md:hidden">
+            <div className="flex items-center justify-between gap-2">
+              {STEPS.map((step) => {
+                const isActive = step.id === data.currentStep;
+                const isCompleted = step.id < data.currentStep;
+                return (
+                  <button
+                    key={step.id}
+                    type="button"
+                    onClick={() => goToStep(step.id)}
+                    className={cn(
+                      'flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-xl py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/60',
+                      isActive && 'bg-emerald-500/10'
+                    )}
+                    aria-current={isActive ? 'step' : undefined}
+                    aria-label={`Go to step ${step.id}: ${step.title}`}
+                  >
+                    <span
+                      className={cn(
+                        'flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold tabular-nums transition-colors',
+                        isActive
+                          ? 'bg-emerald-500 text-[#0a1428] shadow-lg shadow-emerald-900/40 ring-2 ring-emerald-400/40'
+                          : isCompleted
+                            ? 'bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-500/30'
+                            : 'bg-slate-800 text-slate-500 ring-1 ring-slate-700'
+                      )}
+                    >
+                      {isCompleted ? (
+                        <Check className="h-5 w-5 text-emerald-400" strokeWidth={3} />
+                      ) : (
+                        step.id
+                      )}
+                    </span>
+                    <span
+                      className={cn(
+                        'line-clamp-2 w-full px-0.5 text-center text-[10px] font-medium uppercase leading-tight tracking-wide',
+                        isActive ? 'text-emerald-400' : 'text-slate-500'
+                      )}
+                    >
+                      {step.title}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <Progress value={progress} className="mt-3 h-2 bg-slate-800" />
+            <div className="mt-4 flex gap-2">
+              <Button
+                type="button"
+                onClick={saveScenario}
+                variant="outline"
+                disabled={!data.results}
+                className="min-h-11 flex-1 border-emerald-500/35 text-sm text-emerald-400 hover:bg-emerald-500/10"
+              >
+                <Save className="mr-2 h-4 w-4 shrink-0" />
+                Save scenario
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={resetToDefaults}
+                className="min-h-11 shrink-0 px-3 text-sm text-slate-400 hover:text-slate-200"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          <div className="mx-auto max-w-5xl px-4 py-6 md:px-10 md:py-10">
+            <div className="mb-8 flex flex-col gap-6 md:mb-10 md:flex-row md:items-center md:justify-between md:gap-8">
+              <div className="min-w-0">
+                <div className="mb-1 text-xs font-medium uppercase tracking-[3px] text-emerald-500">FLAGTOOL</div>
+                <h1 className="text-3xl font-semibold tracking-tighter text-white md:text-5xl">
+                  Sell My Business Planner
+                </h1>
+                <p className="mt-3 max-w-md text-base leading-relaxed text-slate-400 md:text-xl">
                   Will selling your company actually make you wealthier in the long run?
                 </p>
               </div>
-              
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <div className="text-sm text-slate-400">Current Step</div>
-                  <div className="text-2xl font-semibold text-white">{currentStepInfo.title}</div>
+
+              <div className="flex shrink-0 flex-wrap items-center gap-3 md:gap-4">
+                <div className="min-w-[8rem] flex-1 text-right md:flex-none md:text-right">
+                  <div className="text-xs text-slate-400 md:text-sm">Current Step</div>
+                  <div className="text-lg font-semibold text-white md:text-2xl">{currentStepInfo.title}</div>
                 </div>
-                <div className="w-px h-12 bg-slate-700" />
-                <Button onClick={prevStep} disabled={data.currentStep === 1} variant="outline" size="icon">
-                  <ArrowLeft className="w-4 h-4" />
-                </Button>
-                <Button 
-                  onClick={nextStep} 
-                  disabled={data.currentStep === 4}
-                  className="bg-emerald-600 hover:bg-emerald-500"
+                <div className="hidden h-12 w-px bg-slate-700 md:block" />
+                <Button
+                  type="button"
+                  onClick={prevStep}
+                  disabled={data.currentStep === 1}
+                  variant="outline"
+                  size="icon"
+                  className="h-11 w-11 shrink-0"
                 >
-                  {data.currentStep === 4 ? 'FINISH' : 'NEXT'} 
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  onClick={nextStep}
+                  disabled={data.currentStep === 4}
+                  className="h-11 shrink-0 bg-emerald-600 px-5 hover:bg-emerald-500 md:h-10"
+                >
+                  {data.currentStep === 4 ? 'FINISH' : 'NEXT'}
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
             </div>
@@ -726,39 +805,53 @@ function PlannerContent() {
                 )}
 
                 {data.currentStep === 2 && (
-                  <div className="max-w-2xl space-y-10">
-                    <div className="bg-slate-950/50 border border-slate-700 rounded-3xl p-8">
-                      <h3 className="font-semibold text-lg mb-6 flex items-center gap-2">
-                        <Calculator className="w-5 h-5 text-emerald-400" /> 
+                  <div className="mx-auto w-full max-w-2xl space-y-10">
+                    <div className="rounded-3xl border border-slate-700/90 bg-slate-950/45 p-5 shadow-2xl shadow-black/40 ring-1 ring-white/[0.05] backdrop-blur-md sm:p-8">
+                      <h3 className="mb-6 flex items-center gap-3 text-xl font-semibold tracking-tight text-white sm:mb-8 sm:text-xl md:text-lg">
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 ring-1 ring-emerald-500/25">
+                          <Calculator className="h-5 w-5 text-emerald-400" />
+                        </span>
                         Sale Outcome Summary
                       </h3>
                       {data.results && (
-                        <div className="grid grid-cols-3 gap-6">
-                          <div className="bg-[#0a1428] p-6 rounded-2xl border border-slate-700">
-                            <div className="text-xs text-slate-500 mb-1">ESTIMATED SALE PRICE</div>
-                            <div className="text-4xl font-semibold text-white tabular-nums">
+                        <div className="grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-3 md:gap-6">
+                          <div className="rounded-2xl border border-slate-700/80 bg-[#0a1428]/80 p-6 shadow-inner backdrop-blur-sm sm:p-7">
+                            <div className="mb-3 text-[11px] font-medium uppercase tracking-wider text-slate-500 md:mb-2 md:text-xs">
+                              Estimated sale price
+                            </div>
+                            <div className="text-4xl font-semibold tabular-nums leading-none tracking-tight text-white sm:text-5xl md:text-4xl">
                               ${(data.results.estimatedSalePrice / 1000000).toFixed(1)}M
                             </div>
                           </div>
-                          <div className="bg-[#0a1428] p-6 rounded-2xl border border-slate-700">
-                            <div className="text-xs text-slate-500 mb-1">TOTAL TAXES &amp; FEES</div>
-                            <div className="text-4xl font-semibold text-rose-400 tabular-nums">
+                          <div className="rounded-2xl border border-slate-700/80 bg-[#0a1428]/80 p-6 shadow-inner backdrop-blur-sm sm:p-7">
+                            <div className="mb-3 text-[11px] font-medium uppercase tracking-wider text-slate-500 md:mb-2 md:text-xs">
+                              Total taxes &amp; fees
+                            </div>
+                            <div className="text-4xl font-semibold tabular-nums leading-none tracking-tight text-rose-400 sm:text-5xl md:text-4xl">
                               ${(data.results.totalTaxes / 1000000).toFixed(1)}M
                             </div>
                           </div>
-                          <div className="bg-[#0a1428] p-6 rounded-2xl border border-emerald-500/30">
-                            <div className="text-xs text-emerald-400 mb-1">YOUR NET PROCEEDS</div>
-                            <div className="text-4xl font-semibold text-emerald-400 tabular-nums">
+                          <div className="rounded-2xl border border-emerald-500/35 bg-emerald-500/[0.08] p-6 shadow-inner shadow-emerald-950/20 backdrop-blur-sm ring-1 ring-emerald-500/20 sm:p-7 md:ring-emerald-500/30">
+                            <div className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-emerald-400/95 md:mb-2 md:text-xs">
+                              Your net proceeds
+                            </div>
+                            <div className="text-4xl font-semibold tabular-nums leading-none tracking-tight text-emerald-300 sm:text-[2.85rem] md:text-4xl">
                               ${(data.results.netProceeds / 1000000).toFixed(1)}M
                             </div>
                           </div>
                         </div>
                       )}
                       {data.inputs.qualifiesForQSBS && data.results && data.results.qsbsFederalSavings > 0 && (
-                        <div className="mt-6 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl">
-                          <div className="text-emerald-400 font-medium flex items-center gap-2">
-                            <Check className="w-4 h-4" />
-                            QSBS Exclusion Applied — ${(data.results.qsbsFederalSavings / 1000000).toFixed(1)}M in federal tax savings
+                        <div className="mt-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 sm:mt-8 sm:p-5">
+                          <div className="flex flex-wrap items-start gap-3 text-sm font-medium leading-relaxed text-emerald-400 sm:text-base">
+                            <Check className="mt-0.5 h-5 w-5 shrink-0 sm:h-6 sm:w-6" />
+                            <span>
+                              QSBS exclusion applied —{' '}
+                              <span className="font-mono tabular-nums">
+                                ${(data.results.qsbsFederalSavings / 1000000).toFixed(1)}M
+                              </span>{' '}
+                              in modeled federal tax savings
+                            </span>
                           </div>
                         </div>
                       )}
@@ -1193,8 +1286,8 @@ function PlannerContent() {
             </Card>
 
             {/* Strong Disclaimers */}
-            <div className="mt-12 text-center max-w-md mx-auto">
-              <div className="disclaimer text-xs mx-auto">
+            <div className="mx-auto mt-12 max-w-md px-2 text-center md:px-0">
+              <div className="disclaimer mx-auto text-xs md:text-xs">
                 This tool provides illustrative scenarios based on user inputs and standard financial assumptions. 
                 It is NOT financial, tax, or investment advice. Actual results will vary significantly. 
                 Always consult with qualified CPAs, CFPs, and M&amp;A advisors. Past performance is not indicative of future results.
@@ -1203,8 +1296,8 @@ function PlannerContent() {
           </div>
         </div>
 
-        {/* Assumptions & Insights Sidebar */}
-        <div className="w-80 bg-[#111827] border-l border-slate-700 p-8 flex-shrink-0 overflow-auto">
+        {/* Assumptions & Insights Sidebar — desktop only so main column can use full width on mobile */}
+        <div className="hidden w-80 shrink-0 overflow-auto border-l border-slate-700 bg-[#111827] p-8 md:flex md:flex-col">
           <h3 className="uppercase text-xs tracking-widest text-slate-500 mb-6">ASSUMPTIONS &amp; INSIGHTS</h3>
           
           <Accordion className="w-full">
