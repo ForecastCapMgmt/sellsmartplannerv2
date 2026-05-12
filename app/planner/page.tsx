@@ -505,147 +505,221 @@ function PlannerContent() {
                 </div>
               </CardHeader>
 
-              <CardContent className="p-10">
+              <CardContent className={cn(data.currentStep === 1 ? 'p-10 py-12 md:p-14' : 'p-10')}>
                 {data.currentStep === 1 && (
-                  <div className="grid grid-cols-2 gap-8">
-                    <div className="space-y-8">
-                      <div>
-                        <Label className="text-slate-400">Annual Revenue</Label>
-                        <div className="mt-2 relative">
-                          <span className="absolute left-4 top-3 text-slate-500">$</span>
-                          <Input
-                            type="number"
-                            value={data.inputs.annualRevenue}
-                            onChange={(e) => updateInputs({ annualRevenue: parseInt(e.target.value) || 0 })}
-                            className="pl-8 bg-slate-950 border-slate-700 text-xl h-14"
-                          />
+                  <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-14">
+                    <div className="flex flex-col gap-12">
+                      {/* Revenue & EBITDA */}
+                      <div className="rounded-2xl border border-slate-700/90 bg-[#0f172a]/40 p-8 shadow-inner shadow-black/20 ring-1 ring-white/[0.03] md:p-10">
+                        <div className="mb-8 flex items-center gap-4 border-b border-slate-700/70 pb-5">
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20">
+                            <Wallet className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold tracking-tight text-white md:text-xl">
+                              Revenue &amp; EBITDA
+                            </h3>
+                            <p className="mt-0.5 text-sm text-slate-500">Core financial baseline</p>
+                          </div>
                         </div>
-                        <p className="text-xs text-slate-500 mt-1.5">Last fiscal year revenue</p>
+                        <div className="space-y-10">
+                          <div>
+                            <Label className="text-sm font-medium uppercase tracking-wider text-slate-300">
+                              Annual revenue
+                            </Label>
+                            <div className="relative mt-3">
+                              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-base text-slate-500">$</span>
+                              <Input
+                                type="number"
+                                value={data.inputs.annualRevenue}
+                                onChange={(e) => updateInputs({ annualRevenue: parseInt(e.target.value) || 0 })}
+                                className="h-16 border-slate-700 bg-slate-950 pl-10 text-2xl text-slate-100 md:h-[4.25rem]"
+                              />
+                            </div>
+                            <p className="mt-2 text-sm text-slate-500">Trailing 12-month figure</p>
+                          </div>
+                          <div>
+                            <Label className="text-sm font-medium uppercase tracking-wider text-slate-300">EBITDA</Label>
+                            <div className="relative mt-3">
+                              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-base text-slate-500">$</span>
+                              <Input
+                                type="number"
+                                value={data.inputs.ebitda}
+                                onChange={(e) => updateInputs({ ebitda: parseInt(e.target.value) || 0 })}
+                                className="h-16 border-slate-700 bg-slate-950 pl-10 text-2xl text-slate-100 md:h-[4.25rem]"
+                              />
+                            </div>
+                            <p className="mt-2 text-sm text-slate-500">
+                              Earnings before interest, taxes, depreciation &amp; amortization
+                            </p>
+                          </div>
+                          <div className="rounded-xl border border-slate-700/80 bg-slate-950/60 px-5 py-6 md:px-6 md:py-7">
+                            <Label className="text-sm font-medium uppercase tracking-wider text-slate-300">
+                              EBITDA margin <span className="font-normal normal-case text-slate-500">(live)</span>
+                            </Label>
+                            <div className="mt-2 text-4xl font-semibold tabular-nums text-emerald-400 md:text-[2.5rem]">
+                              {ebitdaMargin}%
+                            </div>
+                            <p className="mt-2 text-sm text-slate-500">(EBITDA ÷ revenue) × 100 — updates as you type</p>
+                          </div>
+                        </div>
                       </div>
 
-                      <div>
-                        <Label className="text-slate-400">EBITDA</Label>
-                        <div className="mt-2 relative">
-                          <span className="absolute left-4 top-3 text-slate-500">$</span>
-                          <Input
-                            type="number"
-                            value={data.inputs.ebitda}
-                            onChange={(e) => updateInputs({ ebitda: parseInt(e.target.value) || 0 })}
-                            className="pl-8 bg-slate-950 border-slate-700 text-xl h-14"
-                          />
+                      {/* Growth & valuation */}
+                      <div className="rounded-2xl border border-slate-700/90 bg-[#0f172a]/40 p-8 shadow-inner shadow-black/20 ring-1 ring-white/[0.03] md:p-10">
+                        <div className="mb-8 flex items-center gap-4 border-b border-slate-700/70 pb-5">
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-teal-500/10 text-teal-400 ring-1 ring-teal-500/20">
+                            <TrendingUp className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold tracking-tight text-white md:text-xl">
+                              Growth &amp; valuation
+                            </h3>
+                            <p className="mt-0.5 text-sm text-slate-500">Trajectory and implied sale multiple</p>
+                          </div>
                         </div>
-                        <p className="text-xs text-slate-500 mt-1.5">Earnings before interest, taxes, depreciation &amp; amortization</p>
-                      </div>
-
-                      <div>
-                        <Label className="text-slate-400 flex items-center gap-2">
-                          EBITDA Margin <span className="text-xs text-slate-500">(auto • live)</span>
-                        </Label>
-                        <div className="text-2xl font-semibold text-emerald-400">
-                          {ebitdaMargin}%
+                        <div className="space-y-10">
+                          <div>
+                            <Label className="text-sm font-medium uppercase tracking-wider text-slate-300">
+                              Annual growth rate
+                            </Label>
+                            <div className="mt-4 flex items-center gap-6">
+                              <Slider
+                                value={[data.inputs.growthRate]}
+                                onValueChange={(values) => updateInputs({ growthRate: values[0] })}
+                                max={25}
+                                min={0}
+                                step={0.5}
+                                className="flex-1"
+                              />
+                              <div className="w-[4.5rem] shrink-0 text-right font-mono text-lg font-medium text-emerald-400 tabular-nums md:text-xl">
+                                {data.inputs.growthRate}%
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <Label className="text-sm font-medium uppercase tracking-wider text-slate-300">
+                              Sale multiple <span className="font-normal normal-case text-slate-500">(× EBITDA)</span>
+                            </Label>
+                            <div className="mt-4 flex items-center gap-6">
+                              <Slider
+                                value={[data.inputs.saleMultiple]}
+                                onValueChange={(values) => updateInputs({ saleMultiple: values[0] })}
+                                max={15}
+                                min={3}
+                                step={0.25}
+                                className="flex-1"
+                              />
+                              <div className="w-[4.5rem] shrink-0 text-right font-mono text-lg font-medium text-emerald-400 tabular-nums md:text-xl">
+                                {data.inputs.saleMultiple.toFixed(1)}x
+                              </div>
+                            </div>
+                            <p className="mt-3 text-sm text-slate-500">
+                              Typical range varies by industry and size; adjust to stress-test your outcome.
+                            </p>
+                          </div>
+                          <div>
+                            <p className="mb-4 text-xs font-medium uppercase tracking-wider text-slate-500 md:text-sm">
+                              Owner &amp; horizon
+                            </p>
+                            <div className="grid grid-cols-2 gap-5 md:gap-6">
+                              <div>
+                                <Label className="text-sm text-slate-300">Owner age</Label>
+                                <Input
+                                  type="number"
+                                  value={data.inputs.ownerAge}
+                                  onChange={(e) => updateInputs({ ownerAge: parseInt(e.target.value) || 0 })}
+                                  className="mt-2.5 h-14 border-slate-700 bg-slate-950 text-lg md:h-16 md:text-xl"
+                                />
+                              </div>
+                              <div>
+                                <Label className="text-sm text-slate-300">Years to retirement</Label>
+                                <Input
+                                  type="number"
+                                  value={data.inputs.yearsToRetirement}
+                                  onChange={(e) => updateInputs({ yearsToRetirement: parseInt(e.target.value) || 0 })}
+                                  className="mt-2.5 h-14 border-slate-700 bg-slate-950 text-lg md:h-16 md:text-xl"
+                                />
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <p className="text-xs text-slate-500 mt-1">
-                          Formula: (EBITDA ÷ Revenue) × 100 — updates live
-                        </p>
                       </div>
                     </div>
 
-                    <div className="space-y-8">
-                      <div>
-                        <Label className="text-slate-400">Annual Growth Rate</Label>
-                        <div className="flex items-center gap-4 mt-3">
-                          <Slider
-                            value={[data.inputs.growthRate]}
-                            onValueChange={(values) => updateInputs({ growthRate: values[0] })}
-                            max={25}
-                            min={0}
-                            step={0.5}
-                            className="flex-1"
-                          />
-                          <div className="w-16 font-mono text-right text-emerald-400">{data.inputs.growthRate}%</div>
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className="text-slate-400">Sale Multiple</Label>
-                        <div className="flex items-center gap-4 mt-3">
-                          <Slider
-                            value={[data.inputs.saleMultiple]}
-                            onValueChange={(values) => updateInputs({ saleMultiple: values[0] })}
-                            max={15}
-                            min={3}
-                            step={0.25}
-                            className="flex-1"
-                          />
-                          <div className="w-16 font-mono text-right text-emerald-400">{data.inputs.saleMultiple.toFixed(1)}x</div>
-                        </div>
-                        <p className="text-xs text-slate-500 mt-2">What multiple do you expect for your business sale? (e.g. 5x, 8x, 12x EBITDA)</p>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-6">
-                        <div>
-                          <Label className="text-slate-400">Owner Age</Label>
-                          <Input
-                            type="number"
-                            value={data.inputs.ownerAge}
-                            onChange={(e) => updateInputs({ ownerAge: parseInt(e.target.value) || 0 })}
-                            className="mt-2 bg-slate-950 border-slate-700"
-                          />
+                    {/* Tax assumptions */}
+                    <div className="rounded-2xl border border-slate-700/90 bg-[#0f172a]/40 p-8 shadow-inner shadow-black/20 ring-1 ring-white/[0.03] md:p-10 lg:min-h-0">
+                      <div className="mb-8 flex items-center gap-4 border-b border-slate-700/70 pb-5">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#FACC15]/10 text-[#FACC15] ring-1 ring-[#FACC15]/20">
+                          <Shield className="h-5 w-5" />
                         </div>
                         <div>
-                          <Label className="text-slate-400">Years to Retirement</Label>
-                          <Input
-                            type="number"
-                            value={data.inputs.yearsToRetirement}
-                            onChange={(e) => updateInputs({ yearsToRetirement: parseInt(e.target.value) || 0 })}
-                            className="mt-2 bg-slate-950 border-slate-700"
-                          />
+                          <h3 className="text-lg font-semibold tracking-tight text-white md:text-xl">Tax assumptions</h3>
+                          <p className="mt-0.5 text-sm text-slate-500">Applied to the modeled business sale</p>
                         </div>
                       </div>
-
-                      <div>
-                        <Label className="text-slate-400">Federal Capital Gains Tax Rate</Label>
-                        <div className="relative mt-3 max-w-[160px]">
-                          <Input
-                            type="number"
-                            step="0.1"
-                            min="0"
-                            max="40"
-                            value={data.inputs.federalCapitalGainsRate ?? 23.8}
-                            onChange={(e) => updateInputs({ federalCapitalGainsRate: parseFloat(e.target.value) || 23.8 })}
-                            className="pl-4 pr-8 py-3 text-xl font-mono bg-slate-950 border-slate-700 focus:border-emerald-500"
-                          />
-                          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-lg text-slate-400 pointer-events-none">%</div>
-                        </div>
-                        <p className="text-xs text-slate-500 mt-2">Long-term capital gains rate applied to the business sale. Most qualified sales use this rate.</p>
-                      </div>
-
-                      <div>
-                        <Label className="text-slate-400">State Tax Rate</Label>
-                        <div className="relative mt-3 max-w-[160px]">
-                          <Input
-                            type="number"
-                            step="0.1"
-                            min="0"
-                            max="20"
-                            value={data.inputs.stateTaxRate ?? 5.0}
-                            onChange={(e) => updateInputs({ stateTaxRate: parseFloat(e.target.value) || 5.0 })}
-                            className="pl-4 pr-8 py-3 text-xl font-mono bg-slate-950 border-slate-700 focus:border-emerald-500"
-                          />
-                          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-lg text-slate-400 pointer-events-none">%</div>
-                        </div>
-                        <p className="text-xs text-slate-500 mt-2">Additional state capital gains or income tax rate applied to the sale.</p>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-6 border-t border-slate-700">
+                      <div className="space-y-10">
                         <div>
-                          <Label>Qualifies for QSBS Exclusion (Section 1202)?</Label>
-                          <p className="text-xs text-slate-500">Can exclude up to 100% of capital gains on qualified small business stock</p>
+                          <Label className="text-sm font-medium uppercase tracking-wider text-slate-300">
+                            Federal LT cap gains
+                          </Label>
+                          <div className="relative mt-3 max-w-[15rem]">
+                            <Input
+                              type="number"
+                              step="0.1"
+                              min="0"
+                              max="40"
+                              value={data.inputs.federalCapitalGainsRate ?? 23.8}
+                              onChange={(e) => updateInputs({ federalCapitalGainsRate: parseFloat(e.target.value) || 23.8 })}
+                              className="h-16 border-slate-700 bg-slate-950 py-3 pl-5 pr-10 font-mono text-2xl text-slate-100 focus-visible:border-emerald-500"
+                            />
+                            <span className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-lg text-slate-400">
+                              %
+                            </span>
+                          </div>
+                          <p className="mt-2 text-sm text-slate-500">
+                            Long-term rate on the modeled sale (before state / QSBS nuances in later steps).
+                          </p>
                         </div>
-                        <Switch 
-                          checked={data.inputs.qualifiesForQSBS || false}
-                          onCheckedChange={(checked) => updateInputs({ qualifiesForQSBS: checked })}
-                        />
+                        <div>
+                          <Label className="text-sm font-medium uppercase tracking-wider text-slate-300">
+                            State capital gains / income add-on
+                          </Label>
+                          <div className="relative mt-3 max-w-[15rem]">
+                            <Input
+                              type="number"
+                              step="0.1"
+                              min="0"
+                              max="20"
+                              value={data.inputs.stateTaxRate ?? 5.0}
+                              onChange={(e) => updateInputs({ stateTaxRate: parseFloat(e.target.value) || 5.0 })}
+                              className="h-16 border-slate-700 bg-slate-950 py-3 pl-5 pr-10 font-mono text-2xl text-slate-100 focus-visible:border-emerald-500"
+                            />
+                            <span className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-lg text-slate-400">
+                              %
+                            </span>
+                          </div>
+                          <p className="mt-2 text-sm text-slate-500">
+                            Combined state-level burden you want reflected in the illustration.
+                          </p>
+                        </div>
+                        <div className="rounded-xl border border-slate-700/80 bg-slate-950/50 px-5 py-6 md:px-6 md:py-7">
+                          <div className="flex items-start justify-between gap-5">
+                            <div className="min-w-0 space-y-2">
+                              <Label className="text-base font-medium leading-snug text-slate-200">
+                                QSBS (Section 1202)
+                              </Label>
+                              <p className="text-sm leading-relaxed text-slate-500">
+                                Exclude up to eligible federal gain on qualified small business stock.
+                              </p>
+                            </div>
+                            <Switch
+                              checked={data.inputs.qualifiesForQSBS || false}
+                              onCheckedChange={(checked) => updateInputs({ qualifiesForQSBS: checked })}
+                              className="mt-1 shrink-0 scale-110"
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -697,77 +771,197 @@ function PlannerContent() {
                 )}
 
                 {data.currentStep === 3 && (
-                  <div className="space-y-8 max-w-xl">
-                    <p className="text-slate-400">Project your post-sale financial picture. All assumptions editable below.</p>
-                    
-                    <div className="space-y-6">
-                      <div>
-                        <Label>Expected Annual Investment Return</Label>
-                        <div className="relative mt-3 max-w-[180px]">
-                          <Input
-                            type="number"
-                            step="0.01"
-                            min="1"
-                            max="999"
-                            value={data.postSaleProjection.investmentReturnRate}
-                            onChange={(e) => {
-                              const val = parseFloat(e.target.value);
-                              if (!isNaN(val)) {
-                                updatePostSaleProjection({ investmentReturnRate: Math.max(1, Math.min(999, val)) });
-                              }
-                            }}
-                            className="pl-4 pr-12 py-6 text-4xl font-mono bg-slate-950 border-slate-700 focus:border-emerald-500 text-emerald-400"
-                          />
-                          <div className="absolute right-6 top-1/2 -translate-y-1/2 text-3xl font-light text-slate-400 pointer-events-none">%</div>
+                  <div className="max-w-2xl space-y-10">
+                    <p className="text-lg leading-relaxed text-slate-400">
+                      Project your post-sale financial picture. All assumptions editable below.
+                    </p>
+
+                    <div className="rounded-2xl border border-slate-700/90 bg-[#0f172a]/40 p-8 shadow-inner shadow-black/20 ring-1 ring-white/[0.03] md:p-10">
+                      <div className="mb-8 flex items-center gap-4 border-b border-slate-700/70 pb-5">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-teal-500/10 text-teal-400 ring-1 ring-teal-500/20">
+                          <TrendingUp className="h-5 w-5" />
                         </div>
-                        <p className="text-xs text-slate-400 mt-3 leading-relaxed">
-                          This represents the expected annual returns on an investment portfolio (e.g., stocks, bonds, private credit, private equity, hedge funds, etc.). Historical long-term stock market returns average ~7–10% nominal, but actual results vary significantly.
-                        </p>
+                        <div>
+                          <h3 className="text-lg font-semibold tracking-tight text-white md:text-xl">
+                            Post-sale projection
+                          </h3>
+                          <p className="mt-0.5 text-sm text-slate-500">Return, draw, inflation, horizon</p>
+                        </div>
                       </div>
-                      {/* Similar controls for spending, inflation, horizon */}
+
+                      <div className="space-y-10">
+                        <div>
+                          <Label className="text-sm font-medium uppercase tracking-wider text-slate-300">
+                            Expected annual investment return
+                          </Label>
+                          <div className="relative mt-3 max-w-[15rem]">
+                            <Input
+                              type="number"
+                              step={0.25}
+                              min={1}
+                              max={999}
+                              value={data.postSaleProjection.investmentReturnRate}
+                              onChange={(e) => {
+                                const val = parseFloat(e.target.value);
+                                if (!isNaN(val)) {
+                                  updatePostSaleProjection({
+                                    investmentReturnRate: Math.max(1, Math.min(999, val)),
+                                  });
+                                }
+                              }}
+                              className="h-16 border-slate-700 bg-slate-950 py-3 pl-5 pr-12 font-mono text-2xl text-emerald-400 focus-visible:border-emerald-500 md:h-[4.25rem]"
+                            />
+                            <span className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-lg text-slate-400">
+                              %
+                            </span>
+                          </div>
+                          <p className="mt-3 text-sm leading-relaxed text-slate-500">
+                            Portfolio-style annual return assumption (nominal). Long-run public markets often land in roughly 7–10%, but outcomes vary materially.
+                          </p>
+                        </div>
+
+                        <div>
+                          <Label className="text-sm font-medium uppercase tracking-wider text-slate-300">
+                            Annual lifestyle draw
+                          </Label>
+                          <div className="relative mt-3 max-w-[20rem]">
+                            <span className="absolute left-5 top-1/2 -translate-y-1/2 text-base text-slate-500">$</span>
+                            <Input
+                              type="number"
+                              min={0}
+                              step={10000}
+                              value={data.postSaleProjection.annualSpending}
+                              onChange={(e) =>
+                                updatePostSaleProjection({
+                                  annualSpending: Math.max(0, parseInt(e.target.value, 10) || 0),
+                                })
+                              }
+                              className="h-16 border-slate-700 bg-slate-950 pl-10 text-2xl text-slate-100 md:h-[4.25rem]"
+                            />
+                          </div>
+                          <p className="mt-3 text-sm leading-relaxed text-slate-500">
+                            Spending taken from proceeds over the projection horizon (Illustrative; see formula in scenario engine).
+                          </p>
+                        </div>
+
+                        <div>
+                          <Label className="text-sm font-medium uppercase tracking-wider text-slate-300">
+                            Expected inflation
+                          </Label>
+                          <div className="mt-4 flex items-center gap-6">
+                            <Slider
+                              value={[data.postSaleProjection.inflationRate]}
+                              onValueChange={(values) =>
+                                updatePostSaleProjection({ inflationRate: values[0] })
+                              }
+                              max={12}
+                              min={0}
+                              step={0.25}
+                              className="flex-1 max-w-xl"
+                            />
+                            <div className="w-[4.5rem] shrink-0 text-right font-mono text-lg font-medium text-emerald-400 tabular-nums md:text-xl">
+                              {data.postSaleProjection.inflationRate}%
+                            </div>
+                          </div>
+                          <p className="mt-3 text-sm text-slate-500">Annual inflation applied to assumed spending trajectory.</p>
+                        </div>
+
+                        <div>
+                          <Label className="text-sm font-medium uppercase tracking-wider text-slate-300">
+                            Projection horizon
+                          </Label>
+                          <div className="mt-4 flex items-center gap-6">
+                            <Slider
+                              value={[data.postSaleProjection.yearsProjection]}
+                              onValueChange={(values) =>
+                                updatePostSaleProjection({ yearsProjection: values[0] })
+                              }
+                              max={35}
+                              min={5}
+                              step={1}
+                              className="flex-1 max-w-xl"
+                            />
+                            <div className="min-w-[5.5rem] shrink-0 text-right font-mono text-lg font-medium text-emerald-400 tabular-nums md:text-xl">
+                              {data.postSaleProjection.yearsProjection} yrs
+                            </div>
+                          </div>
+                          <p className="mt-3 text-sm text-slate-500">
+                            Years plotted in Step 4 and used for post-sale wealth math.
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="disclaimer">
-                      These projections assume constant rates and do not account for market volatility, taxes on investment gains, or lifestyle changes. They are for illustrative purposes only.
+
+                    <div className="rounded-xl border border-slate-700/80 bg-slate-950/50 px-5 py-4 text-sm leading-relaxed text-slate-500 md:px-6 md:py-5">
+                      These projections assume constant rates and do not account for market volatility, taxes on
+                      investment gains, or lifestyle changes. They are for illustrative purposes only.
                     </div>
                   </div>
                 )}
 
                 {data.currentStep === 4 && data.results && (
-                  <div>
-                    <div className="mb-8">
-                      <h3 className="text-2xl font-semibold text-white mb-2">Keep vs Sell Comparison</h3>
-                      <p className="text-slate-400">Over a {data.postSaleProjection.yearsProjection}-year horizon</p>
+                  <div className="space-y-12">
+                    <div className="mb-2">
+                      <h3 className="text-3xl font-semibold tracking-tight text-white md:text-[2rem]">
+                        Keep vs Sell Comparison
+                      </h3>
+                      <p className="mt-2 text-lg text-slate-400">
+                        Over a {data.postSaleProjection.yearsProjection}-year horizon
+                      </p>
                     </div>
-                    
-                    <div className="h-[420px] bg-[#1e2937] rounded-3xl p-8 mb-8">
+
+                    <div className="h-[460px] rounded-3xl border border-slate-700/60 bg-[#1e2937] p-8 shadow-inner shadow-black/20 md:h-[480px] md:p-10">
                       <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={Array.from({ length: data.postSaleProjection.yearsProjection + 1 }, (_, i) => ({
-                          year: i,
-                          keep: keepData[i].value,
-                          sell: sellData[i].value,
-                        }))}>
+                        <LineChart
+                          margin={{ top: 12, right: 8, left: 4, bottom: 8 }}
+                          data={Array.from({ length: data.postSaleProjection.yearsProjection + 1 }, (_, i) => ({
+                            year: i,
+                            keep: keepData[i].value,
+                            sell: sellData[i].value,
+                          }))}
+                        >
                           <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                          <XAxis dataKey="year" stroke="#64748b" />
-                          <YAxis tickFormatter={(v) => `$${(v / 1000000).toFixed(0)}M`} stroke="#64748b" />
-                          <RechartsTooltip 
+                          <XAxis
+                            dataKey="year"
+                            stroke="#64748b"
+                            tick={{ fontSize: 14 }}
+                            tickMargin={12}
+                          />
+                          <YAxis
+                            tickFormatter={(v) => `$${(v / 1000000).toFixed(0)}M`}
+                            stroke="#64748b"
+                            tick={{ fontSize: 14 }}
+                            tickMargin={8}
+                            width={56}
+                          />
+                          <RechartsTooltip
+                            contentStyle={{
+                              borderRadius: 12,
+                              border: '1px solid #334155',
+                              fontSize: 14,
+                              backgroundColor: '#0f172a',
+                            }}
                             formatter={(value: number) => [`$${(value / 1000000).toFixed(1)}M`, '']}
                             labelFormatter={(label) => `Year ${label}`}
                           />
-                          <Legend />
-                          <Line 
-                            type="monotone" 
-                            dataKey="keep" 
-                            stroke="#FACC15" 
-                            strokeWidth={5} 
-                            name="Keep Business (Projected Value)" 
-                            dot={{ fill: '#FACC15', r: 6 }}
+                          <Legend
+                            wrapperStyle={{ fontSize: 14, paddingTop: 16 }}
+                            iconType="circle"
                           />
-                          <Line 
-                            type="monotone" 
-                            dataKey="sell" 
-                            stroke="#10b981" 
-                            strokeWidth={4} 
-                            name="Sell & Invest (Net Wealth)" 
+                          <Line
+                            type="monotone"
+                            dataKey="keep"
+                            stroke="#FACC15"
+                            strokeWidth={5}
+                            name="Keep Business (Projected Value)"
+                            dot={{ fill: '#FACC15', r: 7 }}
+                          />
+                          <Line
+                            type="monotone"
+                            dataKey="sell"
+                            stroke="#10b981"
+                            strokeWidth={4}
+                            name="Sell & Invest (Net Wealth)"
                             dot={{ fill: '#10b981', r: 6 }}
                             strokeDasharray="5 2"
                           />
@@ -776,15 +970,17 @@ function PlannerContent() {
                     </div>
 
                     {/* Key Insight Summary — box stays original dark teal; only main line color shifts gold vs teal */}
-                    <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-3xl p-8">
-                      <div className="flex items-start gap-4">
-                        <div className="mt-1">
-                          <div className="w-10 h-10 bg-emerald-500/20 rounded-2xl flex items-center justify-center">
-                            <Info className="w-5 h-5 text-emerald-400" />
+                    <div className="rounded-3xl border border-emerald-500/30 bg-emerald-500/10 p-8 md:p-10">
+                      <div className="flex items-start gap-5 md:gap-6">
+                        <div className="mt-0.5 shrink-0">
+                          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/20 md:h-14 md:w-14">
+                            <Info className="h-6 w-6 text-emerald-400 md:h-7 md:w-7" />
                           </div>
                         </div>
-                        <div className="flex-1">
-                          <div className="uppercase text-xs tracking-widest text-emerald-400 font-medium mb-2">KEY INSIGHT</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-400 md:text-sm">
+                            Key insight
+                          </div>
                           {(() => {
                             const finalKeepWealth = keepData[keepData.length - 1]?.value || 0;
                             const finalSellWealth = sellData[sellData.length - 1]?.value || 0;
@@ -797,7 +993,7 @@ function PlannerContent() {
                             return (
                               <div
                                 className={cn(
-                                  'text-2xl font-semibold leading-tight mb-3',
+                                  'text-2xl font-semibold leading-snug md:text-3xl',
                                   keepWins ? 'text-[#FACC15]' : 'text-[#34D399]'
                                 )}
                               >
@@ -805,78 +1001,79 @@ function PlannerContent() {
                               </div>
                             );
                           })()}
-                          <p className="text-slate-400 text-[15px]">
-                            Over the {data.postSaleProjection.yearsProjection}-year horizon. This comparison uses the final projected wealth from both scenarios.
+                          <p className="mt-4 text-base leading-relaxed text-slate-400">
+                            Over the {data.postSaleProjection.yearsProjection}-year horizon. This comparison uses the
+                            final projected wealth from both scenarios.
                           </p>
                         </div>
                       </div>
                     </div>
 
                     {/* Sustainable Annual Income — net proceeds × withdrawal tiers; adjusts with expected return */}
-                    <div className="mt-10">
-                      <Card className="border border-emerald-500/35 bg-slate-950/60 overflow-hidden shadow-lg shadow-emerald-950/20">
-                        <CardHeader className="border-b border-emerald-500/20 bg-emerald-500/[0.07] pb-5">
-                          <CardTitle className="text-xl text-white tracking-tight flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
-                              <Wallet className="w-5 h-5 text-emerald-400" />
+                    <div>
+                      <Card className="overflow-hidden border border-emerald-500/35 bg-slate-950/60 shadow-xl shadow-emerald-950/20">
+                        <CardHeader className="border-b border-emerald-500/20 bg-emerald-500/[0.07] px-6 pb-7 pt-7 md:px-8 md:pb-8 md:pt-8">
+                          <CardTitle className="flex flex-wrap items-center gap-4 text-xl tracking-tight text-white md:text-2xl md:gap-5">
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/20 md:h-14 md:w-14">
+                              <Wallet className="h-6 w-6 text-emerald-400 md:h-7 md:w-7" />
                             </div>
                             Sustainable Annual Income Projection
                           </CardTitle>
-                          <CardDescription className="text-slate-400 text-sm mt-3 leading-relaxed">
+                          <CardDescription className="mt-4 text-base leading-relaxed text-slate-400">
                             Based on net proceeds (Sell &amp; Invest){' '}
-                            <span className="text-emerald-300 font-mono tabular-nums">
+                            <span className="font-mono text-lg tabular-nums text-emerald-300">
                               ${((data.results?.netProceeds ?? 0) / 1_000_000).toFixed(2)}M
                             </span>
                             {' · '}
                             Expected annual investment return{' '}
-                            <span className="text-teal-300 font-mono tabular-nums">
+                            <span className="font-mono text-lg tabular-nums text-teal-300">
                               {data.postSaleProjection.investmentReturnRate ?? 7.5}%
                             </span>
                           </CardDescription>
                         </CardHeader>
                         <CardContent className="p-0">
                           <div className="divide-y divide-slate-800/80">
-                            <div className="flex items-start gap-4 px-6 py-5 hover:bg-slate-900/40 transition-colors">
-                              <div className="mt-0.5 w-9 h-9 rounded-lg bg-teal-500/15 border border-teal-500/25 flex items-center justify-center shrink-0">
-                                <Shield className="w-4 h-4 text-teal-400" />
+                            <div className="flex items-start gap-5 px-6 py-6 transition-colors hover:bg-slate-900/40 md:gap-6 md:px-8 md:py-8">
+                              <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-teal-500/25 bg-teal-500/15">
+                                <Shield className="h-5 w-5 text-teal-400" />
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-sm font-medium text-slate-300">
-                                  Conservative <span className="text-slate-500 font-normal">(4.0% withdrawal)</span>
+                              <div className="min-w-0 flex-1">
+                                <div className="text-base font-medium text-slate-300">
+                                  Conservative <span className="font-normal text-slate-500">(4.0% withdrawal)</span>
                                 </div>
-                                <div className="text-2xl font-semibold text-teal-300 font-mono tabular-nums mt-1">
+                                <div className="mt-2 font-mono text-3xl font-semibold tabular-nums text-teal-300 md:text-[2rem]">
                                   {formatAnnualIncomePerYear(sustainableAnnualIncome.conservative)}
                                 </div>
                               </div>
                             </div>
-                            <div className="flex items-start gap-4 px-6 py-5 hover:bg-slate-900/40 transition-colors">
-                              <div className="mt-0.5 w-9 h-9 rounded-lg bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center shrink-0">
-                                <Gauge className="w-4 h-4 text-emerald-400" />
+                            <div className="flex items-start gap-5 px-6 py-6 transition-colors hover:bg-slate-900/40 md:gap-6 md:px-8 md:py-8">
+                              <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-emerald-500/25 bg-emerald-500/15">
+                                <Gauge className="h-5 w-5 text-emerald-400" />
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-sm font-medium text-slate-300">
-                                  Moderate <span className="text-slate-500 font-normal">(5.0% withdrawal)</span>
+                              <div className="min-w-0 flex-1">
+                                <div className="text-base font-medium text-slate-300">
+                                  Moderate <span className="font-normal text-slate-500">(5.0% withdrawal)</span>
                                 </div>
-                                <div className="text-2xl font-semibold text-emerald-300 font-mono tabular-nums mt-1">
+                                <div className="mt-2 font-mono text-3xl font-semibold tabular-nums text-emerald-300 md:text-[2rem]">
                                   {formatAnnualIncomePerYear(sustainableAnnualIncome.moderate)}
                                 </div>
                               </div>
                             </div>
-                            <div className="flex items-start gap-4 px-6 py-5 hover:bg-slate-900/40 transition-colors">
-                              <div className="mt-0.5 w-9 h-9 rounded-lg bg-cyan-500/15 border border-cyan-500/25 flex items-center justify-center shrink-0">
-                                <Sparkles className="w-4 h-4 text-cyan-400" />
+                            <div className="flex items-start gap-5 px-6 py-6 transition-colors hover:bg-slate-900/40 md:gap-6 md:px-8 md:py-8">
+                              <div className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-cyan-500/25 bg-cyan-500/15">
+                                <Sparkles className="h-5 w-5 text-cyan-400" />
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-sm font-medium text-slate-300">
-                                  Optimistic <span className="text-slate-500 font-normal">(7.0% withdrawal)</span>
+                              <div className="min-w-0 flex-1">
+                                <div className="text-base font-medium text-slate-300">
+                                  Optimistic <span className="font-normal text-slate-500">(7.0% withdrawal)</span>
                                 </div>
-                                <div className="text-2xl font-semibold text-cyan-300 font-mono tabular-nums mt-1">
+                                <div className="mt-2 font-mono text-3xl font-semibold tabular-nums text-cyan-300 md:text-[2rem]">
                                   {formatAnnualIncomePerYear(sustainableAnnualIncome.optimistic)}
                                 </div>
                               </div>
                             </div>
                           </div>
-                          <p className="text-xs text-slate-500 leading-relaxed px-6 py-5 border-t border-slate-800 bg-slate-950/40">
+                          <p className="border-t border-slate-800 bg-slate-950/40 px-6 py-6 text-sm leading-relaxed text-slate-500 md:px-8 md:py-7">
                             Estimated sustainable annual spending from your invested net proceeds. Based on your chosen investment return and a 4.0%–7.0% withdrawal rate. These are conservative to optimistic scenarios designed to preserve principal over 30+ years. This is for illustrative purposes only.
                           </p>
                         </CardContent>
@@ -884,20 +1081,32 @@ function PlannerContent() {
                     </div>
 
                     {/* Scenario Comparison Table (full columns + saved scenario rows) */}
-                    <div className="mt-10">
-                      <h4 className="text-xl font-semibold text-white mb-6 flex items-center gap-3">
+                    <div>
+                      <h4 className="mb-6 flex flex-wrap items-center gap-3 text-2xl font-semibold tracking-tight text-white md:text-[1.75rem]">
                         Scenario Comparison
-                        <span className="text-xs bg-slate-700 px-3 py-1 rounded-full font-mono text-slate-400">Saved Scenarios</span>
+                        <span className="rounded-full bg-slate-700 px-4 py-1.5 font-mono text-xs text-slate-300 md:text-sm">
+                          Saved Scenarios
+                        </span>
                       </h4>
-                      <div className="overflow-x-auto">
+                      <div className="overflow-x-auto rounded-2xl border border-slate-700/70">
                         <table className="w-full border-collapse">
                           <thead>
-                            <tr className="border-b border-slate-700">
-                              <th className="text-left py-4 px-6 text-sm font-medium text-slate-400">Scenario</th>
-                              <th className="text-right py-4 px-6 text-sm font-medium text-slate-400">Keep Business</th>
-                              <th className="text-right py-4 px-6 text-sm font-medium text-slate-400">Sell &amp; Invest</th>
-                              <th className="text-right py-4 px-6 text-sm font-medium text-slate-400">Difference</th>
-                              <th className="text-left py-4 px-6 text-sm font-medium text-slate-400">Better</th>
+                            <tr className="border-b border-slate-700 bg-slate-900/40">
+                              <th className="px-6 py-5 text-left text-sm font-semibold uppercase tracking-wide text-slate-400 md:px-8 md:text-base">
+                                Scenario
+                              </th>
+                              <th className="px-6 py-5 text-right text-sm font-semibold uppercase tracking-wide text-slate-400 md:px-8 md:text-base">
+                                Keep Business
+                              </th>
+                              <th className="px-6 py-5 text-right text-sm font-semibold uppercase tracking-wide text-slate-400 md:px-8 md:text-base">
+                                Sell &amp; Invest
+                              </th>
+                              <th className="px-6 py-5 text-right text-sm font-semibold uppercase tracking-wide text-slate-400 md:px-8 md:text-base">
+                                Difference
+                              </th>
+                              <th className="px-6 py-5 text-left text-sm font-semibold uppercase tracking-wide text-slate-400 md:px-8 md:text-base">
+                                Better
+                              </th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-slate-800">
@@ -914,23 +1123,34 @@ function PlannerContent() {
                               const isActive = scenario.id === activeScenarioId;
 
                               return (
-                                <tr key={scenario.id} className={`transition-colors ${isActive ? 'bg-emerald-500/10' : 'hover:bg-slate-800/50'}`}>
-                                  <td className="py-5 px-6 font-medium text-white">{scenario.name}</td>
-                                  <td className="py-5 px-6 text-right font-mono text-emerald-400">
+                                <tr
+                                  key={scenario.id}
+                                  className={`transition-colors ${isActive ? 'bg-emerald-500/10' : 'hover:bg-slate-800/50'}`}
+                                >
+                                  <td className="px-6 py-6 text-base font-medium text-white md:px-8 md:py-7 md:text-lg">
+                                    {scenario.name}
+                                  </td>
+                                  <td className="px-6 py-6 text-right font-mono text-lg text-emerald-400 md:px-8 md:py-7 md:text-xl">
                                     ${(keepFinal / 1000000).toFixed(1)}M
                                   </td>
-                                  <td className="py-5 px-6 text-right font-mono text-teal-400">
+                                  <td className="px-6 py-6 text-right font-mono text-lg text-teal-400 md:px-8 md:py-7 md:text-xl">
                                     ${(sellFinal / 1000000).toFixed(1)}M
                                   </td>
-                                  <td className={`py-5 px-6 text-right font-mono ${isBetterKeep ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                  <td
+                                    className={`px-6 py-6 text-right font-mono text-lg md:px-8 md:py-7 md:text-xl ${
+                                      isBetterKeep ? 'text-emerald-400' : 'text-rose-400'
+                                    }`}
+                                  >
                                     {isBetterKeep ? '+' : ''}${(Math.abs(difference) / 1000000).toFixed(1)}M
                                   </td>
-                                  <td className="py-5 px-6">
-                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                                      isBetterKeep 
-                                        ? 'bg-emerald-500/20 text-emerald-400' 
-                                        : 'bg-rose-500/20 text-rose-400'
-                                    }`}>
+                                  <td className="px-6 py-6 md:px-8 md:py-7">
+                                    <span
+                                      className={`inline-flex items-center rounded-full px-4 py-1.5 text-sm font-semibold ${
+                                        isBetterKeep
+                                          ? 'bg-emerald-500/20 text-emerald-400'
+                                          : 'bg-rose-500/20 text-rose-400'
+                                      }`}
+                                    >
                                       {isBetterKeep ? 'Keep' : 'Sell'}
                                     </span>
                                   </td>
@@ -941,20 +1161,26 @@ function PlannerContent() {
                         </table>
                       </div>
                       {data.savedScenarios.length === 0 && (
-                        <p className="text-slate-400 text-center py-12">Save scenarios in Step 1 or 2 to see comparison here.</p>
+                        <p className="rounded-2xl border border-dashed border-slate-700 py-14 text-center text-base text-slate-400 md:py-16 md:text-lg">
+                          Save scenarios in Step 1 or 2 to see comparison here.
+                        </p>
                       )}
                     </div>
 
-                    <div className="mt-12">
-                      <Card>
-                        <CardHeader>
-                          <CardTitle className="flex items-center gap-2">
-                            Key Insights <Info className="w-4 h-4" />
+                    <div>
+                      <Card className="border-slate-700/90 bg-[#0f172a]/30 shadow-lg shadow-black/20">
+                        <CardHeader className="space-y-1 border-b border-slate-700/70 pb-6 pt-8 md:px-8 md:pb-8">
+                          <CardTitle className="flex items-center gap-3 text-xl text-white md:text-2xl">
+                            Key Insights
+                            <Info className="h-5 w-5 text-emerald-400 md:h-6 md:w-6" />
                           </CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4 text-sm">
+                        <CardContent className="space-y-5 px-6 py-8 text-base leading-relaxed text-slate-300 md:px-8 md:py-10">
                           {data.results.comparison.insights.map((insight, i) => (
-                            <div key={i} className="pl-4 border-l-2 border-slate-700 text-slate-300">
+                            <div
+                              key={i}
+                              className="border-l-4 border-emerald-500/25 pl-5 text-[15px] text-slate-300 md:border-l-[5px] md:pl-6 md:text-base"
+                            >
                               {insight}
                             </div>
                           ))}
